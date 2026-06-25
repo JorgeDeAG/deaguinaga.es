@@ -1,0 +1,1764 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AguaMunicipal · Gestion publica del ciclo del agua</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --verde-oscuro: #0b3d2e;
+    --verde-medio: #1a6b52;
+    --verde-claro: #2d9b74;
+    --verde-suave: #e6f4ee;
+    --verde-borde: #c2ddd3;
+    --tierra: #8b6f47;
+    --crema: #faf7f2;
+    --gris-texto: #3a4a4e;
+    --gris-suave: #6e7f84;
+    --negro: #0d1f1a;
+    --blanco: #ffffff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--blanco);
+    color: var(--negro);
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* -- TIPOGRAFIA ------------------------------------------- */
+  .display {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 700;
+    line-height: 1.15;
+    color: var(--negro);
+  }
+
+  /* -- NAVEGACION ------------------------------------------- */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(250, 247, 242, 0.96);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--verde-borde);
+  }
+
+  .nav-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 40px;
+    height: 68px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+
+  .logo-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+  }
+
+  .logo-sigil {
+    width: 36px; height: 36px;
+    background: var(--verde-oscuro);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .logo-sigil svg { width: 20px; height: 20px; }
+
+  .logo-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--verde-oscuro);
+    letter-spacing: -0.02em;
+  }
+
+  .logo-text span {
+    font-weight: 300;
+    color: var(--gris-suave);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    display: block;
+    letter-spacing: 0;
+    margin-top: -3px;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 36px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--gris-texto);
+    letter-spacing: 0.01em;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--verde-medio); }
+
+  .nav-cta {
+    background: var(--verde-oscuro);
+    color: white !important;
+    padding: 10px 22px;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 0.2s;
+    white-space: nowrap;
+  }
+
+  .nav-cta:hover { background: var(--verde-medio) !important; }
+
+  /* -- HERO ------------------------------------------------- */
+  .hero {
+    padding: 140px 40px 0;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+    min-height: 88vh;
+  }
+
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--verde-suave);
+    border: 1px solid var(--verde-borde);
+    padding: 6px 14px;
+    border-radius: 100px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--verde-medio);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+  }
+
+  .hero-eyebrow::before {
+    content: '';
+    width: 7px; height: 7px;
+    background: var(--verde-claro);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.6rem, 4vw, 3.6rem);
+    margin-bottom: 24px;
+    color: var(--negro);
+  }
+
+  .hero h1 em {
+    font-style: normal;
+    color: var(--verde-medio);
+  }
+
+  .hero-lead {
+    font-size: 1.1rem;
+    color: var(--gris-texto);
+    line-height: 1.75;
+    margin-bottom: 40px;
+    max-width: 480px;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 56px;
+  }
+
+  .btn-primary {
+    background: var(--verde-oscuro);
+    color: white;
+    padding: 14px 28px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.15s;
+    display: inline-block;
+  }
+
+  .btn-primary:hover {
+    background: var(--verde-medio);
+    transform: translateY(-1px);
+  }
+
+  .btn-ghost {
+    border: 1.5px solid var(--verde-borde);
+    color: var(--verde-oscuro);
+    padding: 13px 28px;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 0.95rem;
+    text-decoration: none;
+    transition: border-color 0.2s, background 0.2s;
+    display: inline-block;
+  }
+
+  .btn-ghost:hover {
+    border-color: var(--verde-medio);
+    background: var(--verde-suave);
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 40px;
+  }
+
+  .stat-item {}
+
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--verde-medio);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 0.8rem;
+    color: var(--gris-suave);
+    margin-top: 4px;
+    font-weight: 400;
+  }
+
+  /* Panel derecho Hero */
+  .hero-visual {
+    background: var(--verde-suave);
+    border: 1px solid var(--verde-borde);
+    border-radius: 20px;
+    padding: 36px;
+    position: relative;
+  }
+
+  .hero-visual-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 28px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--verde-borde);
+  }
+
+  .badge-inst {
+    background: var(--verde-oscuro);
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 4px;
+  }
+
+  .hero-visual-title {
+    font-size: 0.8rem;
+    color: var(--gris-suave);
+  }
+
+  .recibo-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--verde-borde);
+    font-size: 0.88rem;
+  }
+
+  .recibo-row:last-of-type { border-bottom: none; }
+
+  .recibo-concepto { color: var(--gris-texto); }
+
+  .recibo-importe {
+    font-weight: 600;
+    color: var(--negro);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .recibo-total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 2px solid var(--verde-medio);
+  }
+
+  .recibo-total-label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--verde-oscuro);
+  }
+
+  .recibo-total-importe {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--verde-oscuro);
+  }
+
+  .recibo-badge {
+    margin-top: 16px;
+    background: var(--verde-oscuro);
+    color: white;
+    text-align: center;
+    padding: 10px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 500;
+  }
+
+  /* -- BANDA ------------------------------------------------ */
+  .banda {
+    background: var(--crema);
+    border-top: 1px solid var(--verde-borde);
+    border-bottom: 1px solid var(--verde-borde);
+    padding: 22px 40px;
+    overflow: hidden;
+  }
+
+  .banda-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    gap: 56px;
+    flex-wrap: wrap;
+    font-size: 0.82rem;
+    color: var(--gris-suave);
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+
+  .banda-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+  }
+
+  .banda-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--verde-claro);
+    flex-shrink: 0;
+  }
+
+  /* -- SECCIONES GENERALES ---------------------------------- */
+  section {
+    padding: 96px 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--verde-medio);
+    margin-bottom: 12px;
+  }
+
+  .section-title {
+    font-size: clamp(2rem, 3vw, 2.8rem);
+    margin-bottom: 18px;
+    max-width: 680px;
+  }
+
+  .section-lead {
+    font-size: 1.05rem;
+    color: var(--gris-texto);
+    line-height: 1.8;
+    max-width: 620px;
+    margin-bottom: 56px;
+  }
+
+  /* -- SECCION EL PROBLEMA ---------------------------------- */
+  .problema-wrap {
+    background: var(--negro);
+    padding: 96px 0;
+  }
+
+  .problema-wrap > .problema-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+
+  .problema-wrap .section-label { color: #6eb89e; }
+  .problema-wrap .section-title { color: white; }
+  .problema-wrap .section-lead { color: #8fa89e; }
+
+  .problema-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    margin-top: 56px;
+    border: 1px solid #2a3d36;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .problema-card {
+    padding: 36px;
+    background: #111d18;
+  }
+
+  .problema-card:nth-child(1) { border-right: 1px solid #2a3d36; border-bottom: 1px solid #2a3d36; }
+  .problema-card:nth-child(2) { border-bottom: 1px solid #2a3d36; }
+  .problema-card:nth-child(3) { border-right: 1px solid #2a3d36; }
+
+  .problema-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--verde-claro);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .problema-desc {
+    font-size: 0.88rem;
+    color: #8fa89e;
+    line-height: 1.6;
+  }
+
+  .problema-desc strong {
+    display: block;
+    font-size: 0.95rem;
+    color: #c8ddd6;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  /* -- OPORTUNIDAD ------------------------------------------ */
+  .oportu-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 56px;
+    align-items: start;
+  }
+
+  .oportu-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .oportu-item {
+    display: grid;
+    grid-template-columns: 44px 1fr;
+    gap: 20px;
+    padding: 28px 0;
+    border-bottom: 1px solid var(--verde-borde);
+    align-items: start;
+  }
+
+  .oportu-item:first-child { padding-top: 0; }
+  .oportu-item:last-child { border-bottom: none; }
+
+  .oportu-num-badge {
+    width: 44px; height: 44px;
+    background: var(--verde-suave);
+    border: 1px solid var(--verde-borde);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--verde-medio);
+    flex-shrink: 0;
+  }
+
+  .oportu-content h4 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--negro);
+    margin-bottom: 6px;
+  }
+
+  .oportu-content p {
+    font-size: 0.88rem;
+    color: var(--gris-suave);
+    line-height: 1.65;
+  }
+
+  .oportu-callout {
+    background: var(--verde-oscuro);
+    color: white;
+    border-radius: 16px;
+    padding: 48px 40px;
+    position: sticky;
+    top: 96px;
+  }
+
+  .oportu-callout blockquote {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 600;
+    line-height: 1.5;
+    margin-bottom: 28px;
+    color: white;
+  }
+
+  .oportu-callout blockquote::before {
+    content: '"';
+    display: block;
+    font-size: 4rem;
+    line-height: 0.8;
+    color: var(--verde-claro);
+    margin-bottom: 12px;
+    font-family: 'Playfair Display', serif;
+  }
+
+  .oportu-cite {
+    font-size: 0.82rem;
+    color: #6eb89e;
+    font-weight: 500;
+    border-top: 1px solid rgba(255,255,255,0.12);
+    padding-top: 20px;
+  }
+
+  /* -- SERVICIOS -------------------------------------------- */
+  .servicios-full {
+    background: var(--crema);
+    border-top: 1px solid var(--verde-borde);
+    border-bottom: 1px solid var(--verde-borde);
+    padding: 96px 0;
+  }
+
+  .servicios-full > .s-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+
+  .servicios-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--verde-borde);
+    border: 1px solid var(--verde-borde);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .serv-card {
+    background: var(--blanco);
+    padding: 32px 28px;
+    transition: background 0.2s;
+  }
+
+  .serv-card:hover { background: var(--verde-suave); }
+
+  .serv-icon {
+    width: 40px; height: 40px;
+    background: var(--verde-suave);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 18px;
+    border: 1px solid var(--verde-borde);
+  }
+
+  .serv-icon svg { width: 20px; height: 20px; stroke: var(--verde-medio); fill: none; stroke-width: 1.8; }
+
+  .serv-card h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--negro);
+    margin-bottom: 10px;
+  }
+
+  .serv-card p {
+    font-size: 0.85rem;
+    color: var(--gris-suave);
+    line-height: 1.65;
+  }
+
+  /* -- COMO FUNCIONA ---------------------------------------- */
+  .pasos-timeline {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    max-width: 720px;
+  }
+
+  .paso {
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+
+  .paso-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+
+  .paso-circle {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: var(--verde-oscuro);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: white;
+    flex-shrink: 0;
+  }
+
+  .paso-line {
+    width: 1px;
+    flex: 1;
+    min-height: 40px;
+    background: var(--verde-borde);
+    margin: 8px 0;
+  }
+
+  .paso:last-child .paso-line { display: none; }
+
+  .paso-content {
+    padding-bottom: 48px;
+  }
+
+  .paso:last-child .paso-content { padding-bottom: 0; }
+
+  .paso-content h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--negro);
+    margin-bottom: 8px;
+    margin-top: 10px;
+  }
+
+  .paso-content p {
+    font-size: 0.9rem;
+    color: var(--gris-suave);
+    line-height: 1.7;
+  }
+
+  /* -- CALCULADORA ------------------------------------------ */
+  .calc-wrap {
+    background: var(--negro);
+    padding: 96px 0;
+  }
+
+  .calc-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 40px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+
+  .calc-wrap .section-label { color: #6eb89e; }
+  .calc-wrap .section-title { color: white; }
+  .calc-wrap .section-lead { color: #8fa89e; margin-bottom: 0; }
+
+  .calc-panel {
+    background: #0f1f1a;
+    border: 1px solid #2a3d36;
+    border-radius: 16px;
+    padding: 40px;
+  }
+
+  .calc-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #6eb89e;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .calc-input-wrap {
+    position: relative;
+    margin-bottom: 32px;
+  }
+
+  .calc-input-wrap input {
+    width: 100%;
+    background: #162920;
+    border: 1px solid #2a3d36;
+    border-radius: 8px;
+    padding: 16px 20px;
+    font-size: 1.5rem;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    color: white;
+    outline: none;
+    transition: border-color 0.2s;
+    -moz-appearance: textfield;
+  }
+
+  .calc-input-wrap input:focus { border-color: var(--verde-claro); }
+  .calc-input-wrap input::-webkit-outer-spin-button,
+  .calc-input-wrap input::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+  .calc-input-hint {
+    font-size: 0.78rem;
+    color: #4a6b60;
+    margin-top: 6px;
+  }
+
+  .calc-breakdown {
+    border-top: 1px solid #2a3d36;
+    padding-top: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+
+  .calc-row-b {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.87rem;
+    color: #6eb89e;
+  }
+
+  .calc-row-b span:last-child {
+    font-weight: 600;
+    color: #c8ddd6;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .calc-total {
+    border-top: 1px solid #2a3d36;
+    padding-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+
+  .calc-total-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #6eb89e;
+  }
+
+  .calc-total-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: white;
+  }
+
+  .calc-total-iva {
+    font-size: 0.75rem;
+    color: #4a6b60;
+    margin-left: 4px;
+  }
+
+  .calc-nota {
+    font-size: 0.75rem;
+    color: #4a6b60;
+    margin-top: 16px;
+    line-height: 1.6;
+  }
+
+  /* -- TESTIMONIO ------------------------------------------- */
+  .testimonio-wrap {
+    background: var(--verde-suave);
+    border-top: 1px solid var(--verde-borde);
+    border-bottom: 1px solid var(--verde-borde);
+    padding: 80px 40px;
+    text-align: center;
+  }
+
+  .testimonio-inner {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .testimonio-comilla {
+    font-family: 'Playfair Display', serif;
+    font-size: 5rem;
+    color: var(--verde-medio);
+    line-height: 0.6;
+    margin-bottom: 20px;
+    opacity: 0.4;
+  }
+
+  .testimonio-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.55;
+    color: var(--verde-oscuro);
+    margin-bottom: 32px;
+  }
+
+  .testimonio-author {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--verde-medio);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  /* -- FORMULARIO ------------------------------------------- */
+  .contacto-wrap {
+    padding: 96px 0;
+  }
+
+  .contacto-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 40px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+
+  .contacto-desc {
+    position: sticky;
+    top: 96px;
+  }
+
+  .garantias {
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .garantia-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 0.88rem;
+    color: var(--gris-texto);
+  }
+
+  .garantia-check {
+    width: 20px; height: 20px;
+    background: var(--verde-suave);
+    border: 1px solid var(--verde-borde);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .garantia-check svg { width: 11px; height: 11px; stroke: var(--verde-medio); fill: none; stroke-width: 2.5; }
+
+  /* Formulario */
+  .form-card {
+    background: var(--blanco);
+    border: 1px solid var(--verde-borde);
+    border-radius: 16px;
+    padding: 44px;
+  }
+
+  .form-header {
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--verde-borde);
+  }
+
+  .form-header h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--negro);
+    margin-bottom: 4px;
+  }
+
+  .form-header p {
+    font-size: 0.85rem;
+    color: var(--gris-suave);
+  }
+
+  .form-group {
+    margin-bottom: 16px;
+  }
+
+  .form-group label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--gris-texto);
+    letter-spacing: 0.03em;
+    margin-bottom: 6px;
+  }
+
+  .form-group input,
+  .form-group select {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid var(--verde-borde);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--negro);
+    background: var(--blanco);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+
+  .form-group input::placeholder { color: #a8b9b5; }
+
+  .form-group input:focus,
+  .form-group select:focus {
+    border-color: var(--verde-medio);
+    box-shadow: 0 0 0 3px rgba(29, 107, 82, 0.1);
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .form-privacidad {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+
+  .form-privacidad input[type="checkbox"] {
+    width: 16px; height: 16px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    accent-color: var(--verde-medio);
+  }
+
+  .form-privacidad label {
+    font-size: 0.8rem;
+    color: var(--gris-suave);
+    line-height: 1.5;
+  }
+
+  .form-privacidad a { color: var(--verde-medio); }
+
+  .btn-submit {
+    width: 100%;
+    background: var(--verde-oscuro);
+    color: white;
+    border: none;
+    padding: 15px 24px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+    letter-spacing: 0.01em;
+  }
+
+  .btn-submit:hover {
+    background: var(--verde-medio);
+    transform: translateY(-1px);
+  }
+
+  .form-nota {
+    font-size: 0.75rem;
+    color: var(--gris-suave);
+    text-align: center;
+    margin-top: 14px;
+    line-height: 1.55;
+  }
+
+  /* -- ALERTAS ---------------------------------------------- */
+  .alert {
+    padding: 14px 20px;
+    border-radius: 8px;
+    margin-bottom: 24px;
+    font-size: 0.88rem;
+    line-height: 1.5;
+  }
+
+  .alert-success {
+    background: #d1fae5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+  }
+
+  .alert-error {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+  }
+
+  /* -- FOOTER ----------------------------------------------- */
+  footer {
+    background: var(--negro);
+    padding: 56px 40px;
+    color: #4a6b60;
+  }
+
+  .footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 24px;
+  }
+
+  .footer-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: white;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 32px;
+    font-size: 0.85rem;
+  }
+
+  .footer-links a {
+    color: #6eb89e;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: white; }
+
+  .footer-copy {
+    font-size: 0.78rem;
+    width: 100%;
+    border-top: 1px solid #1a2e28;
+    padding-top: 24px;
+    margin-top: 8px;
+  }
+
+  /* -- RESPONSIVE ------------------------------------------- */
+  @media (max-width: 900px) {
+    .hero {
+      grid-template-columns: 1fr;
+      padding: 120px 24px 0;
+      gap: 48px;
+      min-height: auto;
+      padding-bottom: 48px;
+    }
+
+    .nav-inner { padding: 0 24px; }
+    .nav-links { display: none; }
+
+    section { padding: 64px 24px; }
+
+    .problema-inner { padding: 0 24px !important; }
+    .problema-grid { grid-template-columns: 1fr; }
+    .problema-card:nth-child(1),
+    .problema-card:nth-child(2),
+    .problema-card:nth-child(3) {
+      border-right: none;
+      border-bottom: 1px solid #2a3d36;
+    }
+
+    .oportu-grid { grid-template-columns: 1fr; }
+    .oportu-callout { position: static; }
+
+    .servicios-grid { grid-template-columns: 1fr 1fr; }
+    .s-inner { padding: 0 24px !important; }
+
+    .calc-inner {
+      grid-template-columns: 1fr;
+      padding: 0 24px;
+      gap: 48px;
+    }
+
+    .contacto-inner {
+      grid-template-columns: 1fr;
+      padding: 0 24px;
+      gap: 48px;
+    }
+
+    .contacto-desc { position: static; }
+    .form-grid { grid-template-columns: 1fr; }
+    .footer-inner { padding: 0 24px; }
+    .banda { padding: 22px 24px; }
+    .testimonio-wrap { padding: 64px 24px; }
+  }
+
+  @media (max-width: 600px) {
+    .servicios-grid { grid-template-columns: 1fr; }
+    .hero-stats { gap: 28px; }
+    .hero-actions { flex-direction: column; }
+    .btn-primary, .btn-ghost { text-align: center; }
+    .form-card { padding: 28px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVEGACION -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="logo-wrap">
+      <div class="logo-sigil">
+        <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M10 2C10 2 4 8 4 12a6 6 0 0012 0c0-4-6-10-6-10z" fill="white" opacity="0.9"/>
+        </svg>
+      </div>
+      <div class="logo-text">
+        AguaMunicipal
+        <span>Remunicipalizacion · Castilla-La Mancha</span>
+      </div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#problema">La oportunidad</a></li>
+      <li><a href="#servicios">Servicios</a></li>
+      <li><a href="#calculadora">Tarifa</a></li>
+      <li><a href="#contacto">Contacto</a></li>
+    </ul>
+    <a href="#contacto" class="nav-cta">Solicitar propuesta</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div style="max-width: 100%; overflow: hidden;">
+<div class="hero">
+  <div class="hero-content">
+    <div class="hero-eyebrow">Gestion publica del agua</div>
+    <h1 class="display">
+      El agua es de todos.<br>
+      <em>Que los ingresos</em><br>
+      tambien lo sean.
+    </h1>
+    <p class="hero-lead">
+      Ayudamos a los ayuntamientos a recuperar el control de la facturacion del agua, empezando por el primer paso: la emision de recibos, padrones y ficheros bancarios.
+    </p>
+    <div class="hero-actions">
+      <a href="#contacto" class="btn-primary">Solicitar propuesta sin compromiso</a>
+      <a href="#calculadora" class="btn-ghost">Calcular tarifa</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-num">6+</div>
+        <div class="stat-label">Anos en produccion real</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">CLM</div>
+        <div class="stat-label">Castilla-La Mancha</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">0€</div>
+        <div class="stat-label">Sin costes de permanencia</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-visual">
+    <div class="hero-visual-header">
+      <div class="badge-inst">Recibo oficial</div>
+      <span class="hero-visual-title">Municipio · 1er Trimestre 2025</span>
+    </div>
+    <div class="recibo-row">
+      <span class="recibo-concepto">Cuota de servicio de agua</span>
+      <span class="recibo-importe">12,40 €</span>
+    </div>
+    <div class="recibo-row">
+      <span class="recibo-concepto">Consumo (22 m? — Tramo 1)</span>
+      <span class="recibo-importe">9,18 €</span>
+    </div>
+    <div class="recibo-row">
+      <span class="recibo-concepto">Tasa de alcantarillado</span>
+      <span class="recibo-importe">4,80 €</span>
+    </div>
+    <div class="recibo-row">
+      <span class="recibo-concepto">Depuracion</span>
+      <span class="recibo-importe">3,20 €</span>
+    </div>
+    <div class="recibo-row">
+      <span class="recibo-concepto">Canon DMA (Directiva Marco)</span>
+      <span class="recibo-importe">2,64 €</span>
+    </div>
+    <div class="recibo-total-row">
+      <span class="recibo-total-label">Total a cobrar (IVA incl.)</span>
+      <span class="recibo-total-importe">32,22 €</span>
+    </div>
+    <div class="recibo-badge">Domiciliado · Fichero C19 generado</div>
+  </div>
+</div>
+</div>
+
+<!-- BANDA DE CONFIANZA -->
+<div class="banda">
+  <div class="banda-inner">
+    <span class="banda-item"><span class="banda-dot"></span>Emision completa de recibos en PDF</span>
+    <span class="banda-item"><span class="banda-dot"></span>Padron y fichero C19</span>
+    <span class="banda-item"><span class="banda-dot"></span>Cartas de pago C60</span>
+    <span class="banda-item"><span class="banda-dot"></span>Aplicacion OAC municipal</span>
+    <span class="banda-item"><span class="banda-dot"></span>Soporte y formacion incluidos</span>
+    <span class="banda-item"><span class="banda-dot"></span>Actualizacion normativa DMA</span>
+  </div>
+</div>
+
+<!-- LA OPORTUNIDAD -->
+<div class="problema-wrap" id="oportunidad">
+  <div class="problema-inner">
+    <div class="section-label">Ingresos que se quedan en el municipio</div>
+    <h2 class="section-title display">¿Cuánto podría reinvertir su ayuntamiento cada año?</h2>
+    <p class="section-lead">Cada recibo que usted emite directamente es una oportunidad de financiación. Remunicipalizar empieza por el paso más sencillo: recuperar la facturación.</p>
+
+    <div class="problema-grid">
+      <div class="problema-card">
+        <div class="problema-num">15–25%</div>
+        <div class="problema-desc">
+          <strong>Más presupuesto municipal</strong>
+          Ese porcentaje que hoy se lleva el operador privado puede destinarse a obras, servicios o bajada de impuestos. Es dinero que ya genera su municipio.
+        </div>
+      </div>
+      <div class="problema-card">
+        <div class="problema-num">Respuesta ágil</div>
+        <div class="problema-desc">
+          <strong>Resuelva incidencias en horas, no en semanas</strong>
+          Un vecino con una factura errónea o una avería deja de esperar a que el operador externo actúe. Su personal municipal puede revisar, corregir y responder de inmediato.
+        </div>
+      </div>
+      <div class="problema-card">
+        <div class="problema-num">Datos propios</div>
+        <div class="problema-desc">
+          <strong>El padrón es suyo</strong>
+          Recupere el acceso directo a la base de datos de abonados. Sin intermediarios, sin depender de terceros para saber quién paga y quién no.
+        </div>
+      </div>
+      <div class="problema-card">
+        <div class="problema-num">Cero costes ocultos</div>
+        <div class="problema-desc">
+          <strong>Adaptación normativa sin sorpresas</strong>
+          Los cambios en la Directiva Marco del Agua o en sus ordenanzas se actualizan en el sistema sin costes adicionales. Usted controla el cumplimiento.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- LA ESTRATEGIA -->
+<section id="estrategia">
+  <div class="oportu-grid">
+    <div>
+      <div class="section-label">El camino inteligente</div>
+      <h2 class="section-title display">Remunicipalizar no es todo o nada</h2>
+      <p class="section-lead">Empiece por el paso de menor riesgo y mayor impacto inmediato: la facturación. El resto se aborda de forma progresiva, cuando usted decida.</p>
+
+      <ul class="oportu-list">
+        <li class="oportu-item">
+          <div class="oportu-num-badge">1</div>
+          <div class="oportu-content">
+            <h4>Fase 1: Recuperar la facturación (hoy)</h4>
+            <p>Emita los recibos directamente desde el ayuntamiento. Ingresos íntegros, control del padrón, cero dependencia externa para cobrar. Implantación en semanas.</p>
+          </div>
+        </li>
+        <li class="oportu-item">
+          <div class="oportu-num-badge">2</div>
+          <div class="oportu-content">
+            <h4>Fase 2: Oficina de Atención al Ciudadano</h4>
+            <p>Su personal municipal gestiona altas, bajas, cambios de titular y domiciliaciones desde una aplicación sencilla. Atención directa, sin intermediarios.</p>
+          </div>
+        </li>
+        <li class="oportu-item">
+          <div class="oportu-num-badge">3</div>
+          <div class="oportu-content">
+            <h4>Fase 3: Digitalización progresiva</h4>
+            <p>Envío de recibos por email solo a abonados domiciliados. Reducción de costes de impresión y correo. Una transición gradual y voluntaria para sus vecinos.</p>
+          </div>
+        </li>
+        <li class="oportu-item">
+          <div class="oportu-num-badge">4</div>
+          <div class="oportu-content">
+            <h4>Fase 4: Soberanía completa del servicio</h4>
+            <p>Con los datos propios y la facturación bajo control, decida cuándo y si asume el mantenimiento de red y contadores. Siempre con información y sin prisas.</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+	<div class="oportu-callout">
+	  <blockquote>
+		"Antes, cualquier incidencia con un recibo dependía del operador externo y podía alargarse semanas.  
+		Ahora, nuestro personal municipal la resuelve en el mismo día.  
+		Y el dinero del agua se queda donde debe: en nuestro municipio."
+	  </blockquote>
+	  <div class="oportu-cite">Secretario-Interventor · Ayuntamiento de la provincia de Toledo</div>
+	</div>
+  </div>
+</section>
+<!-- SERVICIOS -->
+<div class="servicios-full" id="servicios">
+  <div class="s-inner">
+    <div class="section-label">Que incluye el servicio</div>
+    <h2 class="section-title display" style="margin-bottom: 48px;">Todo lo que necesita para emitir con plena autonomia</h2>
+
+    <div class="servicios-grid">
+      <div class="serv-card">
+        <div class="serv-icon">
+          <svg viewBox="0 0 20 20"><rect x="3" y="2" width="14" height="17" rx="2"/><line x1="6" y1="7" x2="14" y2="7"/><line x1="6" y1="10" x2="14" y2="10"/><line x1="6" y1="13" x2="11" y2="13"/></svg>
+        </div>
+        <h3>Emision completa de recibos</h3>
+        <p>Calculo automatico por tramos, alcantarillado, depuracion, canon DMA, apremios y recargos. Generacion de PDFs listos para imprimir o enviar.</p>
+      </div>
+      <div class="serv-card">
+        <div class="serv-icon">
+          <svg viewBox="0 0 20 20"><rect x="2" y="4" width="16" height="12" rx="2"/><line x1="2" y1="8" x2="18" y2="8"/><line x1="6" y1="12" x2="9" y2="12"/><line x1="11" y1="12" x2="14" y2="12"/></svg>
+        </div>
+        <h3>Padron y ficheros bancarios</h3>
+        <p>Padron municipal de facturacion, fichero C19 para domiciliaciones, cartas de pago C60 y carga automatica de devoluciones y pagos.</p>
+      </div>
+      <div class="serv-card">
+        <div class="serv-icon">
+          <svg viewBox="0 0 20 20"><circle cx="10" cy="8" r="4"/><path d="M2 18c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        </div>
+        <h3>Aplicacion OAC municipal</h3>
+        <p>Herramienta para que el personal gestione altas, bajas, cambios de titular, domiciliacion bancaria y consulta de recibos al instante, sin conocimientos tecnicos.</p>
+      </div>
+      <div class="serv-card">
+        <div class="serv-icon">
+          <svg viewBox="0 0 20 20"><path d="M3 4h14a1 1 0 011 1v10a1 1 0 01-1 1H3a1 1 0 01-1-1V5a1 1 0 011-1z"/><path d="M2 7l8 5 8-5"/></svg>
+        </div>
+        <h3>Envio de recibos por email</h3>
+        <p>Solo para recibos domiciliados, como incentivo a la digitalizacion. Activacion progresiva a medida que los vecinos facilitan su correo electronico.</p>
+      </div>
+      <div class="serv-card">
+        <div class="serv-icon">
+          <svg viewBox="0 0 20 20"><path d="M10 2a8 8 0 100 16A8 8 0 0010 2z"/><path d="M10 6v4l3 3"/></svg>
+        </div>
+        <h3>Soporte directo y formacion</h3>
+        <p>Ayuda directa para resolver dudas, manejar la aplicacion de atencion ciudadana y ejecutar correctamente los procesos trimestrales de emision.</p>
+      </div>
+      <div class="serv-card">
+        <div class="serv-icon">
+          <svg viewBox="0 0 20 20"><path d="M9 12l2 2 4-4"/><path d="M5 7h10M5 10h10M5 13h6"/></svg>
+        </div>
+        <h3>Actualizacion normativa continua</h3>
+        <p>El sistema incorpora la Directiva Marco del Agua y se adapta a cambios en tasas, coeficientes y ordenanzas municipales sin costes adicionales.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CÓMO FUNCIONA (detallado) -->
+<section style="background: var(--blanco);">
+  <div class="section-label">El proceso</div>
+  <h2 class="section-title display">Operativo en semanas, no en meses</h2>
+  <p class="section-lead">El ayuntamiento aporta los datos. Nosotros configuramos el sistema y formamos al personal. Cada trimestre, los recibos se emiten automáticamente.</p>
+
+  <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; margin-top: 48px;">
+    <div class="card" style="text-align: center; padding: 32px 24px;">
+      <div style="background: var(--verde-suave); width: 60px; height: 60px; border-radius: 60px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+        <span style="font-size: 28px;">📋</span>
+      </div>
+      <h3 style="font-size: 1.2rem; margin-bottom: 8px;">1. Envío del padrón</h3>
+      <p style="font-size: 0.85rem; color: var(--gris-suave);">Facilita el listado de abonados (número de contador, dirección de suministro, lecturas, nombre, email si lo hay). Nosotros lo cargamos y validamos.</p>
+    </div>
+    <div class="card" style="text-align: center; padding: 32px 24px;">
+      <div style="background: var(--verde-suave); width: 60px; height: 60px; border-radius: 60px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+        <span style="font-size: 28px;">⚙️</span>
+      </div>
+      <h3 style="font-size: 1.2rem; margin-bottom: 8px;">2. Configuración a medida</h3>
+      <p style="font-size: 0.85rem; color: var(--gris-suave);">Ajustamos cuota fija, tramos de consumo, precios de alcantarillado/depuración, IVAs y canon DMA según tus ordenanzas.</p>
+    </div>
+    <div class="card" style="text-align: center; padding: 32px 24px;">
+      <div style="background: var(--verde-suave); width: 60px; height: 60px; border-radius: 60px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+        <span style="font-size: 28px;">👥</span>
+      </div>
+      <h3 style="font-size: 1.2rem; margin-bottom: 8px;">3. Formación del personal</h3>
+      <p style="font-size: 0.85rem; color: var(--gris-suave);">Sesión práctica para que los funcionarios manejen la aplicación de atención ciudadana: altas, bajas, cambios de titular y domiciliaciones.</p>
+    </div>
+    <div class="card" style="text-align: center; padding: 32px 24px;">
+      <div style="background: var(--verde-suave); width: 60px; height: 60px; border-radius: 60px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+        <span style="font-size: 28px;">📧</span>
+      </div>
+      <h3 style="font-size: 1.2rem; margin-bottom: 8px;">4. Emisión trimestral</h3>
+      <p style="font-size: 0.85rem; color: var(--gris-suave);">El sistema genera recibos, padrón, C19, cartas de pago y, si hay emails, los envía a los domiciliados. El ayuntamiento solo revisa y aprueba.</p>
+    </div>
+  </div>
+</section>
+
+
+<style>
+  /* Estilos para el acordeón */
+  .faq-question {
+    transition: background 0.1s ease;
+  }
+  .faq-question:hover {
+    background: rgba(0,0,0,0.02);
+  }
+  .faq-answer {
+    transition: all 0.2s ease;
+  }
+  .faq-item.open .faq-icon {
+    transform: rotate(45deg);
+  }
+  @media (max-width: 900px) {
+    [style*="grid-template-columns: repeat(4, 1fr)"] {
+      grid-template-columns: 1fr !important;
+      gap: 24px !important;
+    }
+  }
+</style>
+
+<!-- CALCULADORA -->
+<div class="calc-wrap" id="calculadora">
+  <div class="calc-inner">
+    <div>
+      <div class="section-label">Tarifa</div>
+      <h2 class="section-title display">Precio claro,<br>sin letra pequena</h2>
+      <p class="section-lead">Cuota mensual fija mas una pequena cantidad por contador activo. Sin permanencia, sin costes de implantacion ocultos, sin sorpresas.</p>
+    </div>
+    <div class="calc-panel">
+      <div class="calc-label">Numero de contadores (abonados)</div>
+      <div class="calc-input-wrap">
+        <input type="number" id="numContadores" value="800" min="0" step="50" placeholder="0">
+        <div class="calc-input-hint">Introduzca el numero aproximado de abonados activos</div>
+      </div>
+      <div class="calc-breakdown">
+        <div class="calc-row-b">
+          <span>Cuota base mensual</span>
+          <span>500,00 €</span>
+        </div>
+        <div class="calc-row-b">
+          <span>Por contador (<span id="contNum">800</span> x 0,33 €)</span>
+          <span id="porContador">264,00 €</span>
+        </div>
+      </div>
+      <div class="calc-total">
+        <span class="calc-total-label">Total mensual</span>
+        <div>
+          <span class="calc-total-num" id="precioMensualTexto">764,00 €</span>
+          <span class="calc-total-iva">+ IVA</span>
+        </div>
+      </div>
+      <div class="calc-nota">
+        Precio sin permanencia. Incluye todos los servicios: emision de recibos, padron, C19, C60, aplicacion OAC, soporte, formacion y actualizacion normativa.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TESTIMONIO -->
+<div class="testimonio-wrap">
+  <div class="testimonio-inner">
+    <div class="testimonio-comilla">"</div>
+    <p class="testimonio-text">Desde que implantamos el sistema, el proceso de facturacion trimestral paso de ocupar tres dias a apenas una hora de revision. Los vecinos dejaron de venir a reclamar por errores. Y el dinero del agua se queda en el municipio para mejorar infraestructuras.</p>
+    <div class="testimonio-author">Secretario-Interventor · Ayuntamiento de la provincia de Toledo</div>
+  </div>
+</div>
+
+<!-- PREGUNTAS FRECUENTES (Acordeón) -->
+<section style="background: var(--crema); border-top: 1px solid var(--verde-borde); border-bottom: 1px solid var(--verde-borde);">
+  <div class="section-label">Resolvemos tus dudas</div>
+  <h2 class="section-title display">Preguntas sobre la remunicipalización</h2>
+  <p class="section-lead">Las cuestiones más habituales que plantean los secretarios e interventores.</p>
+
+  <div class="faq-grid" style="max-width: 880px; margin: 0 auto;">
+    <!-- Pregunta 1 -->
+    <div class="faq-item" style="border-bottom: 1px solid var(--verde-borde); margin-bottom: 4px;">
+      <button class="faq-question" style="width: 100%; background: none; border: none; text-align: left; padding: 20px 0; font-weight: 600; font-size: 1rem; color: var(--negro); cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
+        <span>📋 ¿Qué datos necesita el ayuntamiento para empezar?</span>
+        <span class="faq-icon" style="font-size: 1.2rem;">+</span>
+      </button>
+      <div class="faq-answer" style="display: none; padding-bottom: 20px; color: var(--gris-suave); font-size: 0.9rem; line-height: 1.6;">
+        <p>El padrón de abonados con: número de contador, dirección de suministro (asumimos que todo el término municipal es la misma localidad), lectura anterior y actual, nombre y apellidos del titular, dirección postal de notificación (por defecto la de suministro) y correo electrónico si está disponible. También necesitamos las ordenanzas fiscales vigentes: cuota fija de suministro, tramos de consumo con sus precios por m³, porcentajes de alcantarillado y depuración, e IVAs correspondientes.</p>
+      </div>
+    </div>
+
+    <!-- Pregunta 2 -->
+    <div class="faq-item" style="border-bottom: 1px solid var(--verde-borde); margin-bottom: 4px;">
+      <button class="faq-question" style="width: 100%; background: none; border: none; text-align: left; padding: 20px 0; font-weight: 600; font-size: 1rem; color: var(--negro); cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
+        <span>📧 ¿Y si el ayuntamiento no dispone de los correos electrónicos de los vecinos?</span>
+        <span class="faq-icon" style="font-size: 1.2rem;">+</span>
+      </button>
+      <div class="faq-answer" style="display: none; padding-bottom: 20px; color: var(--gris-suave); font-size: 0.9rem; line-height: 1.6;">
+        <p>No es un obstáculo. El sistema funciona desde el primer día con los datos que tenga (padrón, lecturas). Los recibos se pueden entregar en papel o mediante cartas de pago tradicionales. Cuando el ayuntamiento vaya recopilando direcciones de correo (por ejemplo, en la oficina de atención al ciudadano), se activa el envío progresivo por email <strong>solo para los recibos domiciliados</strong>, fomentando la digitalización sin prisas.</p>
+      </div>
+    </div>
+
+    <!-- Pregunta 3 -->
+    <div class="faq-item" style="border-bottom: 1px solid var(--verde-borde); margin-bottom: 4px;">
+      <button class="faq-question" style="width: 100%; background: none; border: none; text-align: left; padding: 20px 0; font-weight: 600; font-size: 1rem; color: var(--negro); cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
+        <span>🔧 ¿Quién se encarga de leer los contadores cada trimestre?</span>
+        <span class="faq-icon" style="font-size: 1.2rem;">+</span>
+      </button>
+      <div class="faq-answer" style="display: none; padding-bottom: 20px; color: var(--gris-suave); font-size: 0.9rem; line-height: 1.6;">
+        <p>El ayuntamiento debe designar a una persona (operario municipal, empresa de lectura o el propio fontanero de la corporación) que tome las lecturas. Nosotros no realizamos la lectura in situ, pero el sistema está preparado para recibir los ficheros de lecturas (Excel, CSV) y calcular automáticamente los consumos. Si el municipio tiene contadores inalámbricos, podemos integrar la recepción automática de lecturas.</p>
+      </div>
+    </div>
+
+    <!-- Pregunta 4 -->
+    <div class="faq-item" style="border-bottom: 1px solid var(--verde-borde); margin-bottom: 4px;">
+      <button class="faq-question" style="width: 100%; background: none; border: none; text-align: left; padding: 20px 0; font-weight: 600; font-size: 1rem; color: var(--negro); cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
+        <span>🔒 ¿Dónde se alojan los datos de los vecinos? ¿Es seguro?</span>
+        <span class="faq-icon" style="font-size: 1.2rem;">+</span>
+      </button>
+      <div class="faq-answer" style="display: none; padding-bottom: 20px; color: var(--gris-suave); font-size: 0.9rem; line-height: 1.6;">
+        <p>Los datos se almacenan en servidores ubicados en la Unión Europea (proveedores con certificación RGPD). Se aplican medidas de seguridad: cifrado de comunicaciones, accesos restringidos por autenticación de dos factores y copias de seguridad diarias. Actuamos como encargados del tratamiento según el RGPD y firmamos el correspondiente acuerdo de confidencialidad con el ayuntamiento.</p>
+      </div>
+    </div>
+
+    <!-- Pregunta 5 -->
+    <div class="faq-item" style="border-bottom: 1px solid var(--verde-borde); margin-bottom: 4px;">
+      <button class="faq-question" style="width: 100%; background: none; border: none; text-align: left; padding: 20px 0; font-weight: 600; font-size: 1rem; color: var(--negro); cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
+        <span>⏱️ ¿Qué pasa si el ayuntamiento quiere dejar el servicio?</span>
+        <span class="faq-icon" style="font-size: 1.2rem;">+</span>
+      </button>
+      <div class="faq-answer" style="display: none; padding-bottom: 20px; color: var(--gris-suave); font-size: 0.9rem; line-height: 1.6;">
+        <p>Sin permanencia. El ayuntamiento puede rescindir el servicio con un preaviso de 30 días. En ese momento, se le entregarán todos sus datos (padrón, histórico de recibos, configuraciones) en un formato estándar (CSV, Excel). El software no es de su propiedad, pero puede seguir utilizando sus datos con cualquier otra herramienta. No hay penalizaciones por baja.</p>
+      </div>
+    </div>
+
+    <!-- Pregunta 6 -->
+    <div class="faq-item" style="border-bottom: 1px solid var(--verde-borde); margin-bottom: 4px;">
+      <button class="faq-question" style="width: 100%; background: none; border: none; text-align: left; padding: 20px 0; font-weight: 600; font-size: 1rem; color: var(--negro); cursor: pointer; display: flex; justify-content: space-between; align-items: center;">
+        <span>🧪 ¿Se puede probar el sistema antes de contratar?</span>
+        <span class="faq-icon" style="font-size: 1.2rem;">+</span>
+      </button>
+      <div class="faq-answer" style="display: none; padding-bottom: 20px; color: var(--gris-suave); font-size: 0.9rem; line-height: 1.6;">
+        <p>Sí. Realizamos una prueba de concepto con datos reales anonimizados o con una muestra reducida de abonados. El ayuntamiento podrá comprobar que los cálculos se ajustan a sus ordenanzas y que la aplicación de atención ciudadana es fácil de usar. Una vez validado, se firma el contrato de prestación de servicios.</p>
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align: center; margin-top: 56px;">
+    <a href="#contacto" class="btn-primary" style="background: var(--verde-oscuro);">Resolver otras dudas personalizadas</a>
+  </div>
+</section>
+
+
+<!-- CONTACTO -->
+<div class="contacto-wrap" id="contacto">
+  <div class="contacto-inner">
+    <div class="contacto-desc">
+      <div class="section-label">Solicitar propuesta</div>
+      <h2 class="section-title display">¿Hablamos sin compromiso?</h2>
+      <p class="section-lead" style="margin-bottom: 0;">En menos de 24 horas un responsable se pondra en contacto para presentar una propuesta adaptada a su municipio.</p>
+
+      <div class="garantias">
+        <div class="garantia-item">
+          <div class="garantia-check">
+            <svg viewBox="0 0 11 11"><polyline points="1.5,5.5 4,8.5 9.5,2"/></svg>
+          </div>
+          <span>Propuesta personalizada sin coste ni compromiso</span>
+        </div>
+        <div class="garantia-item">
+          <div class="garantia-check">
+            <svg viewBox="0 0 11 11"><polyline points="1.5,5.5 4,8.5 9.5,2"/></svg>
+          </div>
+          <span>Implantacion en pocas semanas</span>
+        </div>
+        <div class="garantia-item">
+          <div class="garantia-check">
+            <svg viewBox="0 0 11 11"><polyline points="1.5,5.5 4,8.5 9.5,2"/></svg>
+          </div>
+          <span>Sin permanencia ni penalizaciones por baja</span>
+        </div>
+        <div class="garantia-item">
+          <div class="garantia-check">
+            <svg viewBox="0 0 11 11"><polyline points="1.5,5.5 4,8.5 9.5,2"/></svg>
+          </div>
+          <span>Sistema en produccion real en municipios de CLM</span>
+        </div>
+        <div class="garantia-item">
+          <div class="garantia-check">
+            <svg viewBox="0 0 11 11"><polyline points="1.5,5.5 4,8.5 9.5,2"/></svg>
+          </div>
+          <span>Datos alojados en servidores dentro de la UE</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <div class="form-header">
+        <h3>Solicitud de informacion</h3>
+        <p>Todos los campos son obligatorios</p>
+      </div>
+
+      <!-- PHP alert placeholder -->
+      <!-- <?php
+        if (isset($_GET['status']) && $_GET['status'] == 'success') {
+          echo '<div class="alert alert-success">Gracias por su interes. En menos de 24 horas un responsable se pondra en contacto para agendar una reunion.</div>';
+        } elseif (isset($_GET['status']) && $_GET['status'] == 'error') {
+          echo '<div class="alert alert-error">Hubo un problema al enviar el mensaje. Por favor, intentelo de nuevo o contactenos directamente.</div>';
+        }
+      ?> -->
+
+      <form id="leadForm" action="enviar.php" method="POST">
+        <div class="form-group">
+          <label>Nombre y cargo</label>
+          <input type="text" name="nombre" placeholder="Ej. Alcalde, Concejal de Hacienda, Secretario..." required>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Municipio</label>
+            <input type="text" name="municipio" placeholder="Nombre del municipio" required>
+          </div>
+          <div class="form-group">
+            <label>Provincia</label>
+            <select name="provincia" required>
+              <option value="" disabled selected>Seleccionar...</option>
+              <option>Albacete</option>
+              <option>Ciudad Real</option>
+              <option>Cuenca</option>
+              <option>Guadalajara</option>
+              <option>Toledo</option>
+              <option>Otra provincia</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Correo electronico</label>
+            <input type="email" name="email" placeholder="alcalde@municipio.es" required>
+          </div>
+          <div class="form-group">
+            <label>Telefono</label>
+            <input type="tel" name="telefono" placeholder="+34 600 000 000" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Numero aproximado de contadores (abonados)</label>
+          <input type="number" name="contadores" placeholder="Ej. 800" min="1" required>
+        </div>
+
+        <div class="form-group">
+          <label>Situacion actual de la facturacion</label>
+          <select name="situacion" required>
+            <option value="" disabled selected>Seleccionar...</option>
+            <option>Gestionada por empresa privada</option>
+            <option>Gestionada por mancomunidad</option>
+            <option>Gestion municipal manual (sin software)</option>
+            <option>Otro sistema</option>
+          </select>
+        </div>
+
+        <div class="form-privacidad">
+          <input type="checkbox" name="privacidad" id="privacidad" value="1" required>
+          <label for="privacidad">Acepto la <a href="privacidad.html" target="_blank">politica de privacidad</a> y consiento el tratamiento de mis datos para atender esta consulta.</label>
+        </div>
+
+        <button type="submit" class="btn-submit">Enviar solicitud &rarr;</button>
+        <p class="form-nota">Sus datos seran tratados con confidencialidad y no seran cedidos a terceros.</p>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">AguaMunicipal</div>
+    <div class="footer-links">
+      <a href="mailto:contacto@aguamunicipal.es">contacto@aguamunicipal.es</a>
+      <a href="tel:+34600000000">+34 600 000 000</a>
+      <a href="privacidad.html">Privacidad</a>
+    </div>
+    <div class="footer-copy">
+      © 2026 · AguaMunicipal · Gestion publica del ciclo del agua · Castilla-La Mancha y resto de Espana
+    </div>
+  </div>
+</footer>
+
+<script>
+  const inputContadores = document.getElementById('numContadores');
+  const spanPrecio = document.getElementById('precioMensualTexto');
+  const spanCont = document.getElementById('contNum');
+  const spanPorCont = document.getElementById('porContador');
+
+  function fmt(n) {
+    return n.toFixed(2).replace('.', ',') + ' €';
+  }
+
+  function actualizarPrecio() {
+    let contadores = parseFloat(inputContadores.value) || 0;
+    if (contadores < 0) contadores = 0;
+    const base = 500;
+    const porContadorRate = 0.33;
+    const porContadorTotal = contadores * porContadorRate;
+    const total = base + porContadorTotal;
+    spanCont.textContent = Math.round(contadores);
+    spanPorCont.textContent = fmt(porContadorTotal);
+    spanPrecio.textContent = fmt(total);
+  }
+
+  inputContadores.addEventListener('input', actualizarPrecio);
+  actualizarPrecio();
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const faqButtons = document.querySelectorAll('.faq-question');
+    console.log('FAQ buttons found:', faqButtons.length); // Para depurar
+    faqButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        const faqItem = this.closest('.faq-item');
+        const answer = faqItem.querySelector('.faq-answer');
+        const icon = this.querySelector('.faq-icon');
+        
+        // Cierra otras preguntas abiertas (opcional)
+        document.querySelectorAll('.faq-item').forEach(item => {
+          if (item !== faqItem && item.classList.contains('open')) {
+            item.classList.remove('open');
+            item.querySelector('.faq-answer').style.display = 'none';
+            item.querySelector('.faq-icon').textContent = '+';
+          }
+        });
+        
+        // Alterna la actual
+        if (faqItem.classList.contains('open')) {
+          faqItem.classList.remove('open');
+          answer.style.display = 'none';
+          icon.textContent = '+';
+        } else {
+          faqItem.classList.add('open');
+          answer.style.display = 'block';
+          icon.textContent = '−';
+        }
+      });
+    });
+  });
+</script>
+
+</body>
+</html>
